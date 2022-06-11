@@ -55,3 +55,5 @@ router.put("/users", ({ params }, res) => {
     .then((dbUserData) => res.json(dbUserData))
     .catch((err) => res.json(err));
 });
+
+module.exports = userRoutes;
