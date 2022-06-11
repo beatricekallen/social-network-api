@@ -14,6 +14,6 @@ mongoose.connect(
 
 mongoose.set("debug", true);
 
-app.use(require("./routes"));
+app.use(require("./controllers"));
 
 app.listen(PORT, () => console.log(`Connected on localhost:${PORT}`));

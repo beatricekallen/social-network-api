@@ -1,4 +1,5 @@
-const { Thought, User } = require("../models");
+const { Thought, User } = require("../../models");
+const router = require("express").Router();
 
 router.get("/thoughts", (req, res) => {
   Thought.find({})
@@ -85,4 +86,4 @@ router.delete("/thoughts/:thoughtId/reactions", (req, res) => {
   //
 });
 
-module.exports = thoughtRoutes;
+module.exports = router;

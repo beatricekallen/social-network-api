@@ -1,7 +1,8 @@
-const { User } = require("../models");
+const { User } = require("../../models");
+const router = require("express").Router();
 
 router.get("/users", (req, res) => {
-  User.find({})
+  User.find()
     .populate({
       path: "thoughts",
       select: "-__v",
@@ -16,13 +17,19 @@ router.get("/users", (req, res) => {
 });
 
 router.get("/users/:id", (req, res) => {
-  User.findOne({ _id: params.id })
+  User.findOne({ _id: req.params.id })
+    .select("-__v")
     .populate({
       path: "thoughts",
       select: "-__v",
     })
-    .select("-__v")
-    .then((dbUserData) => res.json(dbUserData))
+    .populate("friends")
+    .then((dbUserData) => {
+      if (!dbUserData) {
+        return res.status(404).json({ message: "No user found with this id!" });
+      }
+      res.json(dbUserData);
+    })
     .catch((err) => {
       console.log(err);
       res.sendStatus(400);
@@ -36,10 +43,14 @@ router.post("/users", ({ body }, res) => {
 });
 
 router.put("/users", ({ params, body }, res) => {
-  User.findOneAndUpdate({ _id: params.id }, body, {
-    new: true,
-    runValidators: true,
-  })
+  User.findOneAndUpdate(
+    { _id: params.id },
+    { $set: body },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
     .then((dbUserData) => {
       if (!dbUserData) {
         res.status(404).json({ message: "No user found with this id!" });
@@ -56,8 +67,16 @@ router.delete("/users", ({ params }, res) => {
     .catch((err) => res.json(err));
 });
 
-router.post("/users/:userId/friends/:friendId", (req, res) => {});
+router.post("/users/:userId/friends/:friendId", (req, res) => {
+  //findoneandupdate take in req.params.userId match with user's id, $addToSet [friends] pass in req.params.friendId
+  //new: true
+  //.then get data, catch err, return res.json
+});
 
-router.delete("/users/:userId/friends/:friendId", (req, res) => {});
+router.delete("/users/:userId/friends/:friendId", (req, res) => {
+  //findoneandupdate take in req.params.userId match with user's id, $pull [friends] pass in req.params.friendId
+  //new: true
+  //.then get data, catch err, return res.json
+});
 
-module.exports = userRoutes;
+module.exports = router;
