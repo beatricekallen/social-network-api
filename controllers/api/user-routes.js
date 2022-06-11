@@ -71,12 +71,26 @@ router.post("/users/:userId/friends/:friendId", (req, res) => {
   //findoneandupdate take in req.params.userId match with user's id, $addToSet [friends] pass in req.params.friendId
   //new: true
   //.then get data, catch err, return res.json
+  User.findOneAndUpdate(
+    { userId: req.params.userId },
+    { $addToSet: { friends: { friendID: req.params.friendId } } },
+    { new: true }
+  )
+    .then((dbUserData) => res.json(dbUserData))
+    .catch((err) => res.json(err));
 });
 
 router.delete("/users/:userId/friends/:friendId", (req, res) => {
   //findoneandupdate take in req.params.userId match with user's id, $pull [friends] pass in req.params.friendId
   //new: true
   //.then get data, catch err, return res.json
+  User.findOneAndUpdate(
+    { userId: req.params.friendId },
+    { $pull: { friends: { friendID: req.params.friendId } } },
+    { new: true }
+  )
+    .then((dbUserData) => res.json(dbUserData))
+    .catch((err) => res.json(err));
 });
 
 module.exports = router;

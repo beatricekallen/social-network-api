@@ -79,11 +79,23 @@ router.delete("/thoughts", ({ params }, res) => {
 });
 
 router.post("/thoughts/:thoughtId/reactions", (req, res) => {
-  //
+  Thought.findOneAndUpdate(
+    { thoughtId: req.params.thoughtId },
+    { $addToSet: { reactions: { reactionID: req.params.reactionId } } },
+    { new: true }
+  )
+    .then((dbThoughtData) => res.json(dbThoughtData))
+    .catch((err) => res.json(err));
 });
 
 router.delete("/thoughts/:thoughtId/reactions", (req, res) => {
-  //
+  Thought.findOneAndUpdate(
+    { thoughtId: req.params.thoughtId },
+    { $pull: { reactions: { reactionID: req.params.reactionId } } },
+    { new: true }
+  )
+    .then((dbThoughtData) => res.json(dbThoughtData))
+    .catch((err) => res.json(err));
 });
 
 module.exports = router;
