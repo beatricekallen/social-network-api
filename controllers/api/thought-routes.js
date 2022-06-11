@@ -77,4 +77,12 @@ router.delete("/thoughts", ({ params }, res) => {
     .catch((err) => res.json(err));
 });
 
+router.post("/thoughts/:thoughtId/reactions", (req, res) => {
+  //
+});
+
+router.delete("/thoughts/:thoughtId/reactions", (req, res) => {
+  //
+});
+
 module.exports = thoughtRoutes;

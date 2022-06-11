@@ -50,10 +50,14 @@ router.put("/users", ({ params, body }, res) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/users", ({ params }, res) => {
+router.delete("/users", ({ params }, res) => {
   User.findOneAndDelete({ _id: params.id })
     .then((dbUserData) => res.json(dbUserData))
     .catch((err) => res.json(err));
 });
+
+router.post("/users/:userId/friends/:friendId", (req, res) => {});
+
+router.delete("/users/:userId/friends/:friendId", (req, res) => {});
 
 module.exports = userRoutes;
