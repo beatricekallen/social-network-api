@@ -2,7 +2,7 @@ const { User } = require("../../models");
 const router = require("express").Router();
 
 //get all users
-router.get("/users", (req, res) => {
+router.get("/", (req, res) => {
   User.find({})
     .populate({
       path: "thoughts",
@@ -18,7 +18,7 @@ router.get("/users", (req, res) => {
 });
 
 //get user by id
-router.get("/users/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   User.findOne({ _id: req.params.id })
     .select("-__v")
     .populate({
@@ -39,14 +39,14 @@ router.get("/users/:id", (req, res) => {
 });
 
 //create a user
-router.post("/users", ({ body }, res) => {
+router.post("/", ({ body }, res) => {
   User.create(body)
     .then((dbUserData) => res.json(dbUserData))
     .catch((err) => res.json(err));
 });
 
 //update a user by id
-router.put("/users", ({ params, body }, res) => {
+router.put("/", ({ params, body }, res) => {
   User.findOneAndUpdate(
     { _id: params.id },
     { $set: body },
@@ -66,14 +66,14 @@ router.put("/users", ({ params, body }, res) => {
 });
 
 //delete a user by id
-router.delete("/users", ({ params }, res) => {
+router.delete("/", ({ params }, res) => {
   User.findOneAndDelete({ _id: params.id })
     .then((dbUserData) => res.json(dbUserData))
     .catch((err) => res.json(err));
 });
 
 //add a friend to a user
-router.post("/users/:userId/friends/:friendId", (req, res) => {
+router.post("/:userId/friends/:friendId", (req, res) => {
   //findoneandupdate take in req.params.userId match with user's id, $addToSet [friends] pass in req.params.friendId
   //new: true
   //.then get data, catch err, return res.json
@@ -87,7 +87,7 @@ router.post("/users/:userId/friends/:friendId", (req, res) => {
 });
 
 //delete a friend from a user
-router.delete("/users/:userId/friends/:friendId", (req, res) => {
+router.delete("/:userId/friends/:friendId", (req, res) => {
   //findoneandupdate take in req.params.userId match with user's id, $pull [friends] pass in req.params.friendId
   //new: true
   //.then get data, catch err, return res.json

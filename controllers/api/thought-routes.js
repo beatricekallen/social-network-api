@@ -2,7 +2,7 @@ const { Thought, User } = require("../../models");
 const router = require("express").Router();
 
 //get all thoughts
-router.get("/thoughts", (req, res) => {
+router.get("/", (req, res) => {
   Thought.find({})
     .select("-__v")
     .sort({ _id: -1 })
@@ -14,7 +14,7 @@ router.get("/thoughts", (req, res) => {
 });
 
 //get thought by id
-router.get("/thoughts/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   Thought.findOne({ _id: params.id })
     .select("-__v")
     .then((dbThoughtData) => res.json(dbThoughtData))
@@ -25,7 +25,7 @@ router.get("/thoughts/:id", (req, res) => {
 });
 
 //add a thought
-router.post("/thoughts", ({ body }, res) => {
+router.post("/", ({ body }, res) => {
   Thought.create(body)
     .then(({ _id }) => {
       return Thought.findOneAndUpdate(
@@ -45,7 +45,7 @@ router.post("/thoughts", ({ body }, res) => {
 });
 
 //update a thought
-router.put("/thoughts", ({ params, body }, res) => {
+router.put("/", ({ params, body }, res) => {
   Thought.findOneAndUpdate({ _id: params.id }, body, {
     new: true,
     runValidators: true,
@@ -61,7 +61,7 @@ router.put("/thoughts", ({ params, body }, res) => {
 });
 
 //delete a thought
-router.delete("/thoughts", ({ params }, res) => {
+router.delete("/", ({ params }, res) => {
   Thought.findOneAndDelete({ _id: params.thoughtId })
     .then((deletedThought) => {
       if (!deletedThought) {
@@ -84,7 +84,7 @@ router.delete("/thoughts", ({ params }, res) => {
 });
 
 //add a reaction to a thought
-router.post("/thoughts/:thoughtId/reactions", (req, res) => {
+router.post("/:thoughtId/reactions", (req, res) => {
   Thought.findOneAndUpdate(
     { thoughtId: req.params.thoughtId },
     { $addToSet: { reactions: { reactionID: req.params.reactionId } } },
@@ -95,7 +95,7 @@ router.post("/thoughts/:thoughtId/reactions", (req, res) => {
 });
 
 //delete a reaction to a thought
-router.delete("/thoughts/:thoughtId/reactions", (req, res) => {
+router.delete("/:thoughtId/reactions", (req, res) => {
   Thought.findOneAndUpdate(
     { thoughtId: req.params.thoughtId },
     { $pull: { reactions: { reactionID: req.params.reactionId } } },
