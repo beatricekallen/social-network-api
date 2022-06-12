@@ -1,6 +1,7 @@
 const { Thought, User } = require("../../models");
 const router = require("express").Router();
 
+//get all thoughts
 router.get("/thoughts", (req, res) => {
   Thought.find({})
     .select("-__v")
@@ -12,6 +13,7 @@ router.get("/thoughts", (req, res) => {
     });
 });
 
+//get thought by id
 router.get("/thoughts/:id", (req, res) => {
   Thought.findOne({ _id: params.id })
     .select("-__v")
@@ -22,6 +24,7 @@ router.get("/thoughts/:id", (req, res) => {
     });
 });
 
+//add a thought
 router.post("/thoughts", ({ body }, res) => {
   Thought.create(body)
     .then(({ _id }) => {
@@ -41,6 +44,7 @@ router.post("/thoughts", ({ body }, res) => {
     .catch((err) => res.json(err));
 });
 
+//update a thought
 router.put("/thoughts", ({ params, body }, res) => {
   Thought.findOneAndUpdate({ _id: params.id }, body, {
     new: true,
@@ -56,6 +60,7 @@ router.put("/thoughts", ({ params, body }, res) => {
     .catch((err) => res.json(err));
 });
 
+//delete a thought
 router.delete("/thoughts", ({ params }, res) => {
   Thought.findOneAndDelete({ _id: params.thoughtId })
     .then((deletedThought) => {
@@ -78,6 +83,7 @@ router.delete("/thoughts", ({ params }, res) => {
     .catch((err) => res.json(err));
 });
 
+//add a reaction to a thought
 router.post("/thoughts/:thoughtId/reactions", (req, res) => {
   Thought.findOneAndUpdate(
     { thoughtId: req.params.thoughtId },
@@ -88,6 +94,7 @@ router.post("/thoughts/:thoughtId/reactions", (req, res) => {
     .catch((err) => res.json(err));
 });
 
+//delete a reaction to a thought
 router.delete("/thoughts/:thoughtId/reactions", (req, res) => {
   Thought.findOneAndUpdate(
     { thoughtId: req.params.thoughtId },
