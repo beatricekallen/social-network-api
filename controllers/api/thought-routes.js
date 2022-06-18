@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 //get thought by id
 router.get("/:id", (req, res) => {
-  Thought.findOne({ _id: params.id })
+  Thought.findOne({ _id: req.params.id })
     .select("-__v")
     .then((dbThoughtData) => res.json(dbThoughtData))
     .catch((err) => {
@@ -25,12 +25,12 @@ router.get("/:id", (req, res) => {
 });
 
 //add a thought
-router.post("/", ({ body }, res) => {
-  Thought.create(body)
-    .then(({ _id }) => {
-      return Thought.findOneAndUpdate(
-        { _id: params.thoughtId },
-        { $push: { thoughts: _id } },
+router.post("/", (req, res) => {
+  Thought.create(req.body)
+    .then((dbThoughtData) => {
+      return User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $push: { thoughts: dbThoughtData._id } },
         { new: true }
       );
     })
@@ -45,7 +45,7 @@ router.post("/", ({ body }, res) => {
 });
 
 //update a thought
-router.put("/", ({ params, body }, res) => {
+router.put("/:id", ({ params, body }, res) => {
   Thought.findOneAndUpdate({ _id: params.id }, body, {
     new: true,
     runValidators: true,
@@ -61,15 +61,15 @@ router.put("/", ({ params, body }, res) => {
 });
 
 //delete a thought
-router.delete("/", ({ params }, res) => {
-  Thought.findOneAndDelete({ _id: params.thoughtId })
+router.delete("/:thoughtId", (req, res) => {
+  Thought.findOneAndDelete({ _id: req.params.thoughtId })
     .then((deletedThought) => {
       if (!deletedThought) {
         return res.status(404).json({ message: "No thought with this id!" });
       }
       return User.findOneAndUpdate(
-        { _id: params.userId },
-        { $pull: { thought: params.thoughtId } },
+        { thoughts: req.params.thoughtId },
+        { $pull: { thought: req.params.thoughtId } },
         { new: true }
       );
     })
@@ -86,8 +86,14 @@ router.delete("/", ({ params }, res) => {
 //add a reaction to a thought
 router.post("/:thoughtId/reactions", (req, res) => {
   Thought.findOneAndUpdate(
-    { thoughtId: req.params.thoughtId },
-    { $addToSet: { reactions: { reactionID: req.params.reactionId } } },
+    { _id: req.params.thoughtId },
+    {
+      $addToSet: {
+        reactions: {
+          reactionBody: req.body.reactionBody,
+        },
+      },
+    },
     { new: true }
   )
     .then((dbThoughtData) => res.json(dbThoughtData))
@@ -95,10 +101,10 @@ router.post("/:thoughtId/reactions", (req, res) => {
 });
 
 //delete a reaction to a thought
-router.delete("/:thoughtId/reactions", (req, res) => {
+router.delete("/:thoughtId/reactions/:reactionId", (req, res) => {
   Thought.findOneAndUpdate(
-    { thoughtId: req.params.thoughtId },
-    { $pull: { reactions: { reactionID: req.params.reactionId } } },
+    { _id: req.params.thoughtId },
+    { $pull: { reactions: { _id: req.params.reactionId } } },
     { new: true }
   )
     .then((dbThoughtData) => res.json(dbThoughtData))

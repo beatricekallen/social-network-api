@@ -46,7 +46,7 @@ router.post("/", ({ body }, res) => {
 });
 
 //update a user by id
-router.put("/", ({ params, body }, res) => {
+router.put("/:id", ({ params, body }, res) => {
   User.findOneAndUpdate(
     { _id: params.id },
     { $set: body },
@@ -66,7 +66,7 @@ router.put("/", ({ params, body }, res) => {
 });
 
 //delete a user by id
-router.delete("/", ({ params }, res) => {
+router.delete("/:id", ({ params }, res) => {
   User.findOneAndDelete({ _id: params.id })
     .then((dbUserData) => res.json(dbUserData))
     .catch((err) => res.json(err));
@@ -74,12 +74,9 @@ router.delete("/", ({ params }, res) => {
 
 //add a friend to a user
 router.post("/:userId/friends/:friendId", (req, res) => {
-  //findoneandupdate take in req.params.userId match with user's id, $addToSet [friends] pass in req.params.friendId
-  //new: true
-  //.then get data, catch err, return res.json
   User.findOneAndUpdate(
-    { userId: req.params.userId },
-    { $addToSet: { friends: { friendID: req.params.friendId } } },
+    { _id: req.params.userId },
+    { $addToSet: { friends: req.params.friendId } },
     { new: true }
   )
     .then((dbUserData) => res.json(dbUserData))
@@ -88,12 +85,9 @@ router.post("/:userId/friends/:friendId", (req, res) => {
 
 //delete a friend from a user
 router.delete("/:userId/friends/:friendId", (req, res) => {
-  //findoneandupdate take in req.params.userId match with user's id, $pull [friends] pass in req.params.friendId
-  //new: true
-  //.then get data, catch err, return res.json
   User.findOneAndUpdate(
-    { userId: req.params.friendId },
-    { $pull: { friends: { friendID: req.params.friendId } } },
+    { _id: req.params.userId },
+    { $pull: { friends: req.params.friendId } },
     { new: true }
   )
     .then((dbUserData) => res.json(dbUserData))
