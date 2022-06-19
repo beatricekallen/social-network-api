@@ -6,4 +6,4 @@ This project uses MongoDB, Mongoose, Node, and Express. Routes were tested using
 
 Link to GitHub repository: https://github.com/beatricekallen/social-network-api
 
-Walkthrough video:
+Link to walkthrough video: https://drive.google.com/file/d/1nXXcZDiXl6fXhe12NgLZMSf0VESwky5P/view?usp=sharing
